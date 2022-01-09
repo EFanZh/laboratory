@@ -34,6 +34,15 @@ impl Drop for Wait {
     }
 }
 
+impl Clone for Wait {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+            key: None,
+        }
+    }
+}
+
 impl Future for Wait {
     type Output = ();
 
