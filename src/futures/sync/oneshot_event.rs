@@ -48,19 +48,21 @@ impl Future for Wait {
 
     fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
         if let Some(inner) = self.inner.upgrade() {
-            let waker = cx.waker().clone(); // Clone waker first.
-            let mut wakers = inner.wakers.lock(); // Acquire lock later.
+            let waker = cx.waker().clone();
 
-            let old_waker = if let Some(key) = self.key {
-                Some(mem::replace(&mut wakers[key], waker))
+            if let Some(key) = self.key {
+                let old_waker = mem::replace(&mut inner.wakers.lock()[key], waker);
+
+                // Run destructor after unlocking.
+
+                drop(old_waker);
             } else {
-                self.as_mut().key = Some(wakers.insert(waker));
+                let key = inner.wakers.lock().insert(waker);
 
-                None
+                // Assign after unlocking.
+
+                self.key = Some(key);
             };
-
-            drop(wakers); // Drop locks first.
-            drop(old_waker); // Drop waker later.
 
             Poll::Pending
         } else {
