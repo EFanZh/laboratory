@@ -71,12 +71,6 @@ impl Future for Wait {
     }
 }
 
-impl FusedFuture for Wait {
-    fn is_terminated(&self) -> bool {
-        self.inner.strong_count() == 0
-    }
-}
-
 pub struct OneshotEvent {
     inner: Arc<Inner>,
 }
