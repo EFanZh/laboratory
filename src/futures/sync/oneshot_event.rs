@@ -1,4 +1,3 @@
-use futures::future::FusedFuture;
 use parking_lot::Mutex;
 use slotmap::{DefaultKey, HopSlotMap};
 use std::future::Future;
@@ -48,16 +47,25 @@ impl Future for Wait {
 
     fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
         if let Some(inner) = self.inner.upgrade() {
-            let waker = cx.waker().clone();
+            let waker = cx.waker();
 
             if let Some(key) = self.key {
-                let old_waker = mem::replace(&mut inner.wakers.lock()[key], waker);
+                let old_waker = {
+                    let mut wakers = inner.wakers.lock();
+                    let old_waker = &mut wakers[key];
+
+                    if waker.will_wake(old_waker) {
+                        None
+                    } else {
+                        Some(mem::replace(old_waker, waker.clone()))
+                    }
+                };
 
                 // Run destructor after unlocking.
 
                 drop(old_waker);
             } else {
-                let key = inner.wakers.lock().insert(waker);
+                let key = inner.wakers.lock().insert(waker.clone());
 
                 // Assign after unlocking.
 
