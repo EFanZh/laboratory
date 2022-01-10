@@ -73,7 +73,7 @@ impl Future for Wait {
 
 impl FusedFuture for Wait {
     fn is_terminated(&self) -> bool {
-        self.inner.upgrade().is_none()
+        self.inner.strong_count() == 0
     }
 }
 
