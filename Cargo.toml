@@ -4,6 +4,7 @@ name = "laboratory"
 version = "0.1.0"
 
 [dependencies]
+crossbeam = "*"
 futures = "*"
 parking_lot = "*"
 pin-project-lite = "*"
