@@ -79,6 +79,7 @@ impl Future for Wait {
     }
 }
 
+#[derive(Clone)]
 pub struct OneshotEvent {
     inner: Arc<Inner>,
 }
