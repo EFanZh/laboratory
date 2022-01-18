@@ -134,8 +134,8 @@ impl Default for Executor {
 #[cfg(test)]
 mod tests {
     use super::Executor;
-    use crate::futures::defer::Defer;
-    use crate::futures::sync::oneshot_event::OneshotEvent;
+    use crate::future::futures::defer::Defer;
+    use crate::future::sync::oneshot_event::OneshotEvent;
 
     #[test]
     fn test_block_on() {
