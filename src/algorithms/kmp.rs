@@ -1,8 +1,8 @@
-pub fn compute_prefix_function<T>(pattern: &[T]) -> Vec<usize>
+pub fn compute_prefix_function<T>(pattern: &[T]) -> Box<[usize]>
 where
     T: Eq,
 {
-    let mut result = vec![0; pattern.len()];
+    let mut result = vec![0; pattern.len()].into_boxed_slice();
 
     if let Some(rest) = pattern.get(1..) {
         let mut matched = 0;
@@ -13,6 +13,8 @@ where
                 if pattern[matched] == *c {
                     matched += 1;
 
+                    result[i] = matched;
+
                     break;
                 } else if let Some(&new_matched) = result.get(matched.wrapping_sub(1)) {
                     matched = new_matched;
@@ -21,7 +23,6 @@ where
                 }
             }
 
-            result[i] = matched;
             i += 1;
         }
     }
@@ -42,7 +43,10 @@ mod tests {
         ];
 
         for (pattern, expected) in test_cases {
-            assert_eq!(super::compute_prefix_function(pattern.as_bytes()), expected);
+            assert_eq!(
+                super::compute_prefix_function(pattern.as_bytes()).as_ref(),
+                expected,
+            );
         }
     }
 }
