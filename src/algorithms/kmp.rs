@@ -6,24 +6,23 @@ where
 
     if let Some(rest) = pattern.get(1..) {
         let mut matched = 0;
-        let mut i = 1;
+        let mut i = 0;
 
         for c in rest {
+            i += 1;
+
             loop {
                 if pattern[matched] == *c {
                     matched += 1;
-
                     result[i] = matched;
-
-                    break;
                 } else if let Some(&new_matched) = result.get(matched.wrapping_sub(1)) {
                     matched = new_matched;
-                } else {
-                    break;
-                }
-            }
 
-            i += 1;
+                    continue;
+                }
+
+                break;
+            }
         }
     }
 
