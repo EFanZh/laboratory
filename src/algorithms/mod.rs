@@ -1,3 +1,4 @@
+pub mod bit_subsets;
 pub mod gcd;
 pub mod kmp;
 pub mod merge;
