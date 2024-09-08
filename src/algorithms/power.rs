@@ -4,13 +4,20 @@ where
 {
     let mut result = init;
 
-    while exponent != 0 {
-        if exponent & 1 != 0 {
-            result = mul(&result, &base);
-        }
+    if exponent != 0 {
+        loop {
+            if exponent & 1 != 0 {
+                result = mul(&result, &base);
+            }
 
-        base = mul(&base, &base);
-        exponent >>= 1;
+            exponent >>= 1;
+
+            if exponent == 0 {
+                break;
+            }
+
+            base = mul(&base, &base);
+        }
     }
 
     result
