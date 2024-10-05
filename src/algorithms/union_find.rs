@@ -38,15 +38,17 @@ impl UnionFind {
             let left_rank = left_root.1.get();
             let right_rank = right_root.1.get();
 
-            if left_rank < right_rank {
-                left_root.0.set(Self::get_node(states, right_root));
+            let (child, parent) = if left_rank < right_rank {
+                (left_root, right_root)
             } else {
                 if left_rank == right_rank {
                     left_root.1.set(left_rank + 1);
                 }
 
-                right_root.0.set(Self::get_node(states, left_root));
-            }
+                (right_root, left_root)
+            };
+
+            child.0.set(Self::get_node(states, parent));
         }
     }
 
