@@ -1,5 +1,6 @@
 pub mod bit_subsets;
 pub mod combinations;
+pub mod fenwick_tree;
 pub mod gcd;
 pub mod kmp;
 pub mod merge;
