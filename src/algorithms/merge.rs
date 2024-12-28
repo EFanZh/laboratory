@@ -6,23 +6,19 @@ where
     if let Some(mut left) = iter_1.next() {
         'outer: loop {
             if let Some(right) = iter_2.next() {
-                loop {
-                    if right < left {
-                        f(right);
+                while left <= right {
+                    f(left);
 
-                        break;
+                    if let Some(next_left) = iter_1.next() {
+                        left = next_left;
                     } else {
-                        f(left);
+                        left = right;
 
-                        if let Some(next_left) = iter_1.next() {
-                            left = next_left;
-                        } else {
-                            left = right;
-
-                            break 'outer;
-                        }
+                        break 'outer;
                     }
                 }
+
+                f(right);
             } else {
                 iter_2 = iter_1;
 
@@ -45,25 +41,22 @@ where
     if let Some(mut left) = iter_1.next() {
         'outer: loop {
             if let Some(right) = iter_2.next() {
-                loop {
-                    if right < left {
+                while left <= right {
+                    f(left);
+
+                    if let Some(next_left) = iter_1.next() {
+                        left = next_left;
+                    } else {
                         f(right);
 
-                        break;
-                    } else {
-                        f(left);
-
-                        if let Some(next_left) = iter_1.next() {
-                            left = next_left;
-                        } else {
-                            f(right);
-
-                            break 'outer;
-                        }
+                        break 'outer;
                     }
                 }
+
+                f(right);
             } else {
                 f(left);
+
                 iter_1.for_each(f);
 
                 return;
