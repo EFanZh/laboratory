@@ -26,10 +26,7 @@ pub fn partition<T>(values: &mut [T], mut f: impl FnMut(&T) -> bool) -> usize {
     result
 }
 
-pub fn three_way_partition<T>(
-    values: &mut [T],
-    mut f: impl FnMut(&T) -> Ordering,
-) -> (usize, usize) {
+pub fn three_way_partition<T>(values: &mut [T], mut f: impl FnMut(&T) -> Ordering) -> (usize, usize) {
     let mut iter_start = 0;
     let mut iter_end = values.len();
 

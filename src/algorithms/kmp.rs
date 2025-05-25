@@ -42,10 +42,7 @@ mod tests {
         ];
 
         for (pattern, expected) in test_cases {
-            assert_eq!(
-                super::compute_prefix_function(pattern.as_bytes()).as_ref(),
-                expected,
-            );
+            assert_eq!(super::compute_prefix_function(pattern.as_bytes()).as_ref(), expected);
         }
     }
 }

@@ -28,10 +28,7 @@ where
 {
     pub fn new(future_1: A, future_2: B) -> Self {
         Self {
-            inner: Select::new(
-                Map::new(future_1, Left::new()),
-                Map::new(future_2, Right::new()),
-            ),
+            inner: Select::new(Map::new(future_1, Left::new()), Map::new(future_2, Right::new())),
         }
     }
 }

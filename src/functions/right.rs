@@ -8,9 +8,7 @@ pub struct Right<L> {
 
 impl<L> Right<L> {
     pub fn new() -> Self {
-        Self {
-            _phantom: PhantomData,
-        }
+        Self { _phantom: PhantomData }
     }
 }
 

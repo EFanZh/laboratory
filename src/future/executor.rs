@@ -46,10 +46,7 @@ impl Inner {
 
         futures::pin_mut!(future);
 
-        let waker = Arc::new(ThreadWaker {
-            thread: thread.clone(),
-        })
-        .into();
+        let waker = Arc::new(ThreadWaker { thread: thread.clone() }).into();
 
         let mut cx = Context::from_waker(&waker);
 
@@ -60,11 +57,7 @@ impl Inner {
                     while let Some(task) = self.ready.pop() {
                         let waker = Arc::clone(&task).into();
 
-                        match task
-                            .future
-                            .lock()
-                            .poll_unpin(&mut Context::from_waker(&waker))
-                        {
+                        match task.future.lock().poll_unpin(&mut Context::from_waker(&waker)) {
                             Poll::Ready(()) => {
                                 // The task is done.
                             }

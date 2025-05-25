@@ -1,8 +1,5 @@
-pub fn merge_1<'a, I>(
-    mut left_iter: I,
-    mut right_iter: I,
-    mut buffer_iter: impl Iterator<Item = &'a mut I::Item>,
-) where
+pub fn merge_1<'a, I>(mut left_iter: I, mut right_iter: I, mut buffer_iter: impl Iterator<Item = &'a mut I::Item>)
+where
     I: Iterator,
     I::Item: Ord + 'a,
 {
@@ -31,16 +28,11 @@ pub fn merge_1<'a, I>(
         left_iter = right_iter;
     }
 
-    buffer_iter
-        .zip(left_iter)
-        .for_each(|(target, value)| *target = value);
+    buffer_iter.zip(left_iter).for_each(|(target, value)| *target = value);
 }
 
-pub fn merge_2<'a, I1, I2>(
-    mut left_iter: I1,
-    mut right_iter: I1,
-    mut buffer: impl Iterator<Item = &'a mut I1::Item>,
-) where
+pub fn merge_2<'a, I1, I2>(mut left_iter: I1, mut right_iter: I1, mut buffer: impl Iterator<Item = &'a mut I1::Item>)
+where
     I1: Iterator,
     I2: Iterator<Item = I1::Item>,
     I1::Item: Ord + 'a,
@@ -67,15 +59,11 @@ pub fn merge_2<'a, I1, I2>(
 
             write(left);
 
-            buffer
-                .zip(left_iter)
-                .for_each(|(target, value)| *target = value);
+            buffer.zip(left_iter).for_each(|(target, value)| *target = value);
 
             return;
         }
     }
 
-    buffer
-        .zip(right_iter)
-        .for_each(|(target, value)| *target = value);
+    buffer.zip(right_iter).for_each(|(target, value)| *target = value);
 }
