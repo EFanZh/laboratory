@@ -1,6 +1,6 @@
 use crossbeam::queue::SegQueue;
-use futures::future::BoxFuture;
 use futures::FutureExt;
+use futures::future::BoxFuture;
 use parking_lot::Mutex;
 use std::future::Future;
 use std::sync::{Arc, Weak};
