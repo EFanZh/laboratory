@@ -1,4 +1,4 @@
-//! `tree[i]` counts the numbers in range [`i & (i + 1)`, `i`]:
+//! `tree[i]` stores the count of numbers in range `(i & (i + 1))..=i`.
 //!
 //! 0000 => [0000, 0000]
 //! 0001 => [0000, 0001]
@@ -16,6 +16,14 @@
 //! 1101 => [1100, 1101]
 //! 1110 => [1110, 1110]
 
+pub fn fenwick_tree_add(tree: &mut [u32], mut x: usize) {
+    while let Some(count) = tree.get_mut(x) {
+        *count += 1;
+
+        x |= x + 1;
+    }
+}
+
 pub fn fenwick_tree_count_less_than(tree: &[u32], mut x: usize) -> u32 {
     let mut result = 0;
 
@@ -32,12 +40,4 @@ pub fn fenwick_tree_count_less_than(tree: &[u32], mut x: usize) -> u32 {
     }
 
     result
-}
-
-pub fn fenwick_tree_add(tree: &mut [u32], mut x: usize) {
-    while let Some(count) = tree.get_mut(x) {
-        *count += 1;
-
-        x |= x + 1;
-    }
 }
