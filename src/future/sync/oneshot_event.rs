@@ -25,10 +25,10 @@ pub struct Wait {
 
 impl Drop for Wait {
     fn drop(&mut self) {
-        if let Some(key) = self.key.take() {
-            if let Some(inner) = self.inner.upgrade() {
-                inner.wakers.lock().remove(key);
-            }
+        if let Some(key) = self.key.take()
+            && let Some(inner) = self.inner.upgrade()
+        {
+            inner.wakers.lock().remove(key);
         }
     }
 }
