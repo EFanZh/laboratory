@@ -27,24 +27,28 @@ pub fn partition<T>(values: &mut [T], mut f: impl FnMut(&T) -> bool) -> usize {
 }
 
 pub fn three_way_partition<T>(values: &mut [T], mut f: impl FnMut(&T) -> Ordering) -> (usize, usize) {
-    let mut iter_start = 0;
-    let mut iter_end = values.len();
+    // +------+-------+-----------+---------+
+    // | Less | Equal | Unchecked | Greater |
+    // +------+-------+-----------+---------+
+
+    let mut unchecked_start = 0;
+    let mut greater_start = values.len();
 
     'outer: loop {
-        if iter_start < iter_end {
-            let left_ordering = f(&values[iter_start]);
+        if unchecked_start < greater_start {
+            let left_ordering = f(&values[unchecked_start]);
 
             match left_ordering {
                 Ordering::Less => {}
                 Ordering::Equal => break,
                 Ordering::Greater => loop {
-                    iter_end -= 1;
+                    greater_start -= 1;
 
-                    if iter_start < iter_end {
-                        let right_ordering = f(&values[iter_end]);
+                    if unchecked_start < greater_start {
+                        let right_ordering = f(&values[greater_start]);
 
                         if right_ordering != Ordering::Greater {
-                            values.swap(iter_start, iter_end);
+                            values.swap(unchecked_start, greater_start);
 
                             if right_ordering == Ordering::Less {
                                 break;
@@ -53,43 +57,43 @@ pub fn three_way_partition<T>(values: &mut [T], mut f: impl FnMut(&T) -> Orderin
                             break 'outer;
                         }
                     } else {
-                        return (iter_start, iter_start);
+                        return (unchecked_start, unchecked_start);
                     }
                 },
             }
 
-            iter_start += 1;
+            unchecked_start += 1;
         } else {
-            return (iter_start, iter_start);
+            return (unchecked_start, unchecked_start);
         }
     }
 
-    let mut less_count = iter_start;
+    let mut equal_start = unchecked_start;
 
     'outer: loop {
-        iter_start += 1;
+        unchecked_start += 1;
 
-        if iter_start < iter_end {
-            let left_ordering = f(&values[iter_start]);
+        if unchecked_start < greater_start {
+            let left_ordering = f(&values[unchecked_start]);
 
             match left_ordering {
                 Ordering::Less => {
-                    values.swap(less_count, iter_start);
-                    less_count += 1;
+                    values.swap(equal_start, unchecked_start);
+                    equal_start += 1;
                 }
                 Ordering::Equal => {}
                 Ordering::Greater => loop {
-                    iter_end -= 1;
+                    greater_start -= 1;
 
-                    if iter_start < iter_end {
-                        let right_ordering = f(&values[iter_end]);
+                    if unchecked_start < greater_start {
+                        let right_ordering = f(&values[greater_start]);
 
                         if right_ordering != Ordering::Greater {
-                            values.swap(iter_start, iter_end);
+                            values.swap(unchecked_start, greater_start);
 
                             if right_ordering == Ordering::Less {
-                                values.swap(less_count, iter_start);
-                                less_count += 1;
+                                values.swap(equal_start, unchecked_start);
+                                equal_start += 1;
                             }
 
                             break;
@@ -104,5 +108,37 @@ pub fn three_way_partition<T>(values: &mut [T], mut f: impl FnMut(&T) -> Orderin
         }
     }
 
-    (less_count, iter_start)
+    (equal_start, unchecked_start)
+}
+
+pub fn three_way_partition_simple<T>(values: &mut [T], mut f: impl FnMut(&T) -> Ordering) -> (usize, usize)
+where
+    T: Ord,
+{
+    // +------+-------+-----------+---------+
+    // | Less | Equal | Unchecked | Greater |
+    // +------+-------+-----------+---------+
+
+    let mut equal_start = 0;
+    let mut unchecked_start = 0;
+    let mut greater_start = values.len();
+
+    while unchecked_start < greater_start {
+        match f(&values[unchecked_start]) {
+            Ordering::Less => {
+                values.swap(equal_start, unchecked_start);
+
+                equal_start += 1;
+                unchecked_start += 1;
+            }
+            Ordering::Equal => unchecked_start += 1,
+            Ordering::Greater => {
+                greater_start -= 1;
+
+                values.swap(unchecked_start, greater_start);
+            }
+        }
+    }
+
+    (equal_start, unchecked_start)
 }
